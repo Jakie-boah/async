@@ -3,8 +3,7 @@ import asyncpg
 from loguru import logger
 from util import async_timed
 
-product_query = \
-    """
+product_query = """
     SELECT
     p.product_id,
     p.product_name,
@@ -38,12 +37,13 @@ async def query_products_concurrently(pool, queries):
 
 async def main():
     async with asyncpg.create_pool(
-            host="localhost",
-            port=5432,
-            database="postgres",
-            user="postgres",
-            password="postgres",
-            min_size=6, max_size=6
+        host="localhost",
+        port=5432,
+        database="postgres",
+        user="postgres",
+        password="postgres",
+        min_size=6,
+        max_size=6,
     ) as pool:
         await query_products_synchronously(pool, 10000)
         await query_products_concurrently(pool, 10000)

@@ -6,10 +6,12 @@ from _asyncpg.connection import load_common_words
 from loguru import logger
 
 
-def gen_products(common_words: List[str],
-                 brand_id_start: int,
-                 brand_id_end: int,
-                 products_to_create: int) -> List[Tuple[str, int]]:
+def gen_products(
+    common_words: List[str],
+    brand_id_start: int,
+    brand_id_end: int,
+    products_to_create: int,
+) -> List[Tuple[str, int]]:
     products = []
     for _ in range(products_to_create):
         description = [common_words[index] for index in sample(range(900), 10)]
@@ -19,7 +21,7 @@ def gen_products(common_words: List[str],
 
 
 def gen_skus(
-        product_id_start: int, product_id_end: int, skus_to_create: int
+    product_id_start: int, product_id_end: int, skus_to_create: int
 ) -> List[Tuple[int, int, int]]:
     skus = []
     for _ in range(skus_to_create):
@@ -54,8 +56,7 @@ async def main():
     await connection.close()
 
 
-product_query = \
-    """
+product_query = """
     SELECT
     p.product_id,
     p.product_name,
@@ -71,12 +72,13 @@ product_query = \
 
 
 async def main():
-    connection = await asyncpg.connect(host='127.0.0.1',
-                                       port=5432,
-                                       user='postgres',
-                                       database='products',
-                                       password='password')
-    logger.info('Creating the product database...')
-    queries = [connection.execute(product_query),
-               connection.execute(product_query)]
+    connection = await asyncpg.connect(
+        host="127.0.0.1",
+        port=5432,
+        user="postgres",
+        database="products",
+        password="password",
+    )
+    logger.info("Creating the product database...")
+    queries = [connection.execute(product_query), connection.execute(product_query)]
     results = await asyncio.gather(*queries)
